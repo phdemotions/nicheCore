@@ -11,7 +11,7 @@ You can install the development version of nicheCore from GitHub:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("nicheverse/nicheCore")
+devtools::install_github("phdemotions/nicheCore")
 ```
 
 ## Core Features
