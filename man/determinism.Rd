@@ -46,6 +46,7 @@ platforms and sessions.
 
 Sorts data frame rows by specified columns with consistent NA handling
 (NAs sorted to end). Ensures reproducible row order across platforms.
+Supports all R data types including factors and complex numbers.
 }
 
 \subsection{hash_object}{
