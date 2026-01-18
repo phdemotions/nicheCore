@@ -37,7 +37,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' paths <- niche_output_paths("my_outputs")
+#' paths <- niche_output_paths(tempfile("outputs"))
 #' df <- data.frame(x = 1:3, y = letters[1:3])
 #' write_audit_csv(df, file.path(paths$audit, "log.csv"))
 #' write_audit_json(list(a = 1, b = 2), file.path(paths$audit, "meta.json"))
@@ -48,7 +48,7 @@ NULL
 
 #' @rdname outputs
 #' @export
-niche_output_paths <- function(root = "outputs") {
+niche_output_paths <- function(root) {
   assert_is_scalar_character(root, .arg = "root")
 
   subdirs <- c("data", "audit", "models", "figures", "tables", "reports", "logs")

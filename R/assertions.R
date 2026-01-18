@@ -5,9 +5,7 @@
 #'
 #' @param x Object to validate.
 #' @param names Character vector of required names.
-#' @param path File or directory path.
-#' @param df Data frame to check.
-#' @param id_col Column name(s) that should be unique.
+#' @param path File path.
 #' @param .arg Name of the argument being validated (for error messages).
 #'
 #' @return Invisibly returns `TRUE` if assertion passes; otherwise errors.
@@ -98,51 +96,3 @@ assert_is_existing_file <- function(path, .arg = "path") {
   invisible(TRUE)
 }
 
-#' @rdname assertions
-#' @export
-assert_is_existing_dir <- function(path, .arg = "path") {
-  if (!is.character(path) || length(path) != 1) {
-    niche_abort(sprintf("%s must be a scalar character path.", .arg))
-  }
-  if (!dir.exists(path)) {
-    niche_abort(
-      sprintf(
-        "%s does not exist: %s. Create the directory or check the path.",
-        .arg,
-        path
-      )
-    )
-  }
-  invisible(TRUE)
-}
-
-#' @rdname assertions
-#' @export
-assert_unique_id <- function(df, id_col) {
-  if (!is.data.frame(df)) {
-    niche_abort("df must be a data frame.")
-  }
-  if (!id_col %in% names(df)) {
-    niche_abort(
-      sprintf(
-        "id_col '%s' not found in df. Available columns: %s.",
-        id_col,
-        paste(names(df), collapse = ", ")
-      )
-    )
-  }
-
-  ids <- df[[id_col]]
-  duplicates <- ids[duplicated(ids)]
-
-  if (length(duplicates) > 0) {
-    niche_abort(
-      sprintf(
-        "Expected unique IDs in column '%s'; found duplicates: %s. Remove or resolve duplicates.",
-        id_col,
-        paste(unique(duplicates), collapse = ", ")
-      )
-    )
-  }
-  invisible(TRUE)
-}

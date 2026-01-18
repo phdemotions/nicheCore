@@ -7,7 +7,7 @@
 \alias{validate_niche_spec}
 \title{Niche Spec Class}
 \usage{
-new_niche_spec(x = list())
+new_niche_spec(x)
 
 is_niche_spec(x)
 

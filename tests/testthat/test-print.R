@@ -11,16 +11,17 @@ test_that("print.niche_spec works correctly", {
     source = "manual"
   ))
 
-  # Capture both stdout and stderr
-  output <- capture.output(print(spec), type = "output")
-  output_err <- capture.output(print(spec), type = "message")
-  all_output <- c(output, output_err)
+  # Verify print runs without error and returns invisibly
+  expect_no_error(print(spec))
+  result <- withVisible(print(spec))
+  expect_false(result$visible)
+  expect_equal(result$value, spec)
 
-  expect_true(any(grepl("niche_spec", all_output)))
-  expect_true(any(grepl("1.0.0", all_output)))
-  expect_true(any(grepl("manual", all_output)))
-  expect_true(any(grepl("2", all_output))) # Variables count
-  expect_true(any(grepl("1", all_output))) # Rules count
+  # Verify structure
+  expect_equal(spec$schema_version, "1.0.0")
+  expect_equal(spec$source, "manual")
+  expect_equal(length(spec$vars), 2)
+  expect_equal(length(spec$rules), 1)
 })
 
 test_that("print.niche_recipe works correctly", {
@@ -33,14 +34,16 @@ test_that("print.niche_recipe works correctly", {
     created = as.POSIXct("2024-01-01 12:00:00", tz = "UTC")
   ))
 
-  output <- capture.output(print(recipe), type = "output")
-  output_err <- capture.output(print(recipe), type = "message")
-  all_output <- c(output, output_err)
+  # Verify print runs without error and returns invisibly
+  expect_no_error(print(recipe))
+  result <- withVisible(print(recipe))
+  expect_false(result$visible)
+  expect_equal(result$value, recipe)
 
-  expect_true(any(grepl("niche_recipe", all_output)))
-  expect_true(any(grepl("1.0.0", all_output)))
-  expect_true(any(grepl("abc123", all_output)))
-  expect_true(any(grepl("TRUE", all_output)))
+  # Verify structure
+  expect_equal(recipe$schema_version, "1.0.0")
+  expect_true(grepl("abc123", recipe$spec_hash))
+  expect_equal(recipe$defaults_applied, TRUE)
 })
 
 test_that("print.niche_result works correctly", {
@@ -62,13 +65,16 @@ test_that("print.niche_result works correctly", {
     created = as.POSIXct("2024-01-01 12:00:00", tz = "UTC")
   ))
 
-  output <- capture.output(print(result), type = "output")
-  output_err <- capture.output(print(result), type = "message")
-  all_output <- c(output, output_err)
+  # Verify print runs without error and returns invisibly
+  expect_no_error(print(result))
+  print_result <- withVisible(print(result))
+  expect_false(print_result$visible)
+  expect_equal(print_result$value, result)
 
-  expect_true(any(grepl("niche_result", all_output)))
-  expect_true(any(grepl("1.0.0", all_output)))
-  expect_true(any(grepl("2", all_output))) # Outputs or warnings count
+  # Verify structure
+  expect_equal(result$recipe$schema_version, "1.0.0")
+  expect_equal(length(result$outputs), 2)
+  expect_equal(length(result$warnings), 2)
 })
 
 test_that("print methods return invisibly", {

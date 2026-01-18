@@ -7,11 +7,11 @@
 \alias{validate_niche_recipe}
 \title{Niche Recipe Class}
 \usage{
-new_niche_recipe(x = list())
+new_niche_recipe(x)
 
 is_niche_recipe(x)
 
-validate_niche_recipe(recipe)
+validate_niche_recipe(x)
 }
 \arguments{
 \item{x}{A list containing recipe fields.}

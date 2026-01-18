@@ -6,7 +6,7 @@
 \alias{niche_warn}
 \title{Standardized Condition Handlers}
 \usage{
-niche_abort(message, details = NULL, help = NULL)
+niche_abort(message, class = NULL, ..., call = rlang::caller_env())
 
 niche_warn(message, class = NULL, ..., call = rlang::caller_env())
 }

@@ -6,8 +6,6 @@
 \alias{assert_is_scalar_character}
 \alias{assert_is_scalar_logical}
 \alias{assert_is_existing_file}
-\alias{assert_is_existing_dir}
-\alias{assert_unique_id}
 \title{Assertion Functions}
 \usage{
 assert_has_names(x, names, .arg = "x")
@@ -17,10 +15,6 @@ assert_is_scalar_character(x, .arg = "x")
 assert_is_scalar_logical(x, .arg = "x")
 
 assert_is_existing_file(path, .arg = "path")
-
-assert_is_existing_dir(path, .arg = "path")
-
-assert_unique_id(df, id_col)
 }
 \arguments{
 \item{x}{Object to validate.}
@@ -29,11 +23,7 @@ assert_unique_id(df, id_col)
 
 \item{.arg}{Name of the argument being validated (for error messages).}
 
-\item{path}{File or directory path.}
-
-\item{df}{Data frame to check.}
-
-\item{id_col}{Column name(s) that should be unique.}
+\item{path}{File path.}
 }
 \value{
 Invisibly returns \code{TRUE} if assertion passes; otherwise errors.

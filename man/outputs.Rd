@@ -7,7 +7,7 @@
 \alias{write_audit_json}
 \title{Output and Artifact Conventions}
 \usage{
-niche_output_paths(root = "outputs")
+niche_output_paths(root)
 
 write_audit_csv(df, path)
 
@@ -64,7 +64,7 @@ pretty printing) for reproducible diffs.
 }
 \examples{
 \dontrun{
-paths <- niche_output_paths("my_outputs")
+paths <- niche_output_paths(tempfile("outputs"))
 df <- data.frame(x = 1:3, y = letters[1:3])
 write_audit_csv(df, file.path(paths$audit, "log.csv"))
 write_audit_json(list(a = 1, b = 2), file.path(paths$audit, "meta.json"))
