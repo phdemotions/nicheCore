@@ -1,0 +1,252 @@
+---
+title: "nicheCore Objects and Validation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{nicheCore Objects and Validation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nicheCore)
+```
+
+## Overview
+
+`nicheCore` provides the shared foundation for the niche ecosystem. It defines three core S3 classes that represent the lifecycle of a niche analysis:
+
+1. **`niche_spec`**: Specification of the analysis
+2. **`niche_recipe`**: Processed recipe derived from a spec
+3. **`niche_result`**: Results from executing a recipe
+
+These classes, along with validation logic and utility functions, ensure consistency across all niche packages.
+
+## Creating and Validating Objects
+
+### niche_spec
+
+A `niche_spec` defines the complete specification for an analysis:
+
+```{r}
+spec <- new_niche_spec(list(
+  meta = list(
+    title = "Example Analysis",
+    author = "Analyst"
+  ),
+  data = list(
+    source = "data.csv"
+  ),
+  vars = list(
+    age = list(type = "numeric"),
+    income = list(type = "numeric")
+  ),
+  rules = list(
+    rule1 = list(expr = "age > 18")
+  ),
+  scales = list(),
+  models = list(
+    model1 = list(type = "linear")
+  ),
+  outputs = list(root = "outputs"),
+  schema_version = "1.0.0",
+  source = "manual"
+))
+
+# Check if it's a spec
+is_niche_spec(spec)
+
+# Validate structure
+validate_niche_spec(spec)
+
+# Print summary
+print(spec)
+```
+
+### niche_recipe
+
+A `niche_recipe` represents a processed specification ready for execution:
+
+```{r}
+recipe <- new_niche_recipe(list(
+  schema_version = "1.0.0",
+  spec_hash = hash_object(spec),
+  defaults_applied = TRUE,
+  steps = list(
+    step1 = list(name = "load_data"),
+    step2 = list(name = "apply_rules")
+  ),
+  outputs = list(root = "outputs"),
+  created = Sys.time()
+))
+
+is_niche_recipe(recipe)
+validate_niche_recipe(recipe)
+print(recipe)
+```
+
+### niche_result
+
+A `niche_result` contains the outputs from executing a recipe:
+
+```{r}
+result <- new_niche_result(list(
+  recipe = recipe,
+  outputs = list(
+    cleaned_data = data.frame(x = 1:3, y = 4:6)
+  ),
+  artifacts = list(
+    figure1 = "outputs/figures/plot.png"
+  ),
+  session_info = sessionInfo(),
+  warnings = character(0),
+  created = Sys.time()
+))
+
+is_niche_result(result)
+validate_niche_result(result)
+print(result)
+```
+
+## Deterministic Operations
+
+`nicheCore` provides helpers to ensure reproducible results:
+
+### Stable Ordering
+
+```{r}
+df <- data.frame(
+  x = c(3, 1, NA, 2),
+  y = c("a", "b", "c", "d")
+)
+
+# Sort with deterministic NA handling
+sorted <- stable_order(df, "x")
+sorted
+```
+
+### Object and File Hashing
+
+```{r}
+# Hash R objects
+obj <- list(a = 1, b = 2, c = 3)
+hash_object(obj)
+
+# Hash files
+tmp_file <- tempfile()
+writeLines(c("line1", "line2"), tmp_file)
+hash_file(tmp_file)
+unlink(tmp_file)
+```
+
+### Seed Management
+
+```{r}
+# Temporarily set seed without affecting global RNG state
+set.seed(999)
+before <- runif(1)
+
+result_with_seed <- with_seed(123, runif(5))
+
+after <- runif(1)
+
+# RNG state is preserved
+cat("Before:", before, "\n")
+cat("After:", after, "\n")
+cat("With seed 123:", result_with_seed, "\n")
+```
+
+## Output Management
+
+### Standard Output Paths
+
+```{r}
+# Create standard directory structure
+paths <- niche_output_paths(tempfile())
+names(paths)
+
+# All directories are created
+all(sapply(paths, dir.exists))
+```
+
+### Audit Trails
+
+```{r}
+# Write audit CSV
+df <- data.frame(
+  timestamp = Sys.time(),
+  action = "data_load",
+  status = "success"
+)
+
+csv_path <- file.path(paths$audit, "log.csv")
+write_audit_csv(df, csv_path)
+
+# Write audit JSON
+meta <- list(
+  analysis_id = "abc123",
+  version = "1.0.0",
+  created = Sys.time()
+)
+
+json_path <- file.path(paths$audit, "metadata.json")
+write_audit_json(meta, json_path)
+```
+
+## Assertions
+
+`nicheCore` provides assertion functions for validation:
+
+```{r, error = TRUE}
+# Validate object has required names
+obj <- list(a = 1, b = 2)
+assert_has_names(obj, c("a", "b"))
+
+# This will error
+assert_has_names(obj, c("a", "c"))
+```
+
+```{r}
+# Validate scalar types
+assert_is_scalar_character("test")
+assert_is_scalar_logical(TRUE)
+```
+
+```{r, error = TRUE}
+# Validate unique IDs
+df <- data.frame(id = c(1, 2, 2, 3), value = letters[1:4])
+assert_unique_id(df, "id")
+```
+
+## Error Handling
+
+`nicheCore` uses structured conditions for better error handling:
+
+```{r, error = TRUE}
+# Validation errors are structured
+tryCatch(
+  niche_abort("Invalid input", class = "invalid_input"),
+  error = function(e) {
+    cat("Error class:", class(e), "\n")
+    cat("Message:", conditionMessage(e), "\n")
+  }
+)
+```
+
+## Summary
+
+`nicheCore` provides:
+
+- **Standardized S3 classes** for specs, recipes, and results
+- **Validation logic** to ensure data integrity
+- **Deterministic helpers** for reproducibility
+- **Output conventions** for consistent artifact management
+- **Assertion functions** for fail-fast validation
+
+All niche packages build on this foundation, ensuring a consistent and reliable ecosystem.
