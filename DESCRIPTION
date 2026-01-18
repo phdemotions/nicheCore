@@ -1,28 +1,21 @@
 Package: nicheCore
-Title: Core Infrastructure for the Niche Ecosystem
+Type: Package
+Title: Core Infrastructure for Niche R Universe
 Version: 0.1.0
-Authors@R:
-    person("Niche Team", email = "niche@example.com", role = c("aut", "cre"))
-Description: Provides the shared foundation for the niche ecosystem, including
-    standardized S3 classes (niche_spec, niche_recipe, niche_result), validation
-    logic, deterministic helpers, and output conventions. This package defines
-    the canonical structure and behavior that all niche packages must respect.
+Authors@R: c(
+    person("Niche", "Contributors", role = c("aut", "cre"),
+           email = "niche@example.com")
+    )
+Description: Provides core object definitions, validators, and utilities
+    for the niche R universe. Defines niche_spec, niche_recipe, and
+    niche_result objects along with their constructors and validators.
 License: MIT + file LICENSE
-URL: https://github.com/nicheverse/nicheCore
-BugReports: https://github.com/nicheverse/nicheCore/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
-    rlang (>= 1.1.0),
-    cli (>= 3.6.0),
-    digest (>= 0.6.33),
-    jsonlite (>= 1.8.0),
-    fs (>= 1.6.0)
-Suggests:
-    testthat (>= 3.0.0),
-    knitr,
-    rmarkdown,
-    withr
-Config/testthat/edition: 3
-VignetteBuilder: knitr
+    rlang,
+    cli,
+    jsonlite,
+    digest,
+    fs
