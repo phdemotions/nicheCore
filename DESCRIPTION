@@ -1,14 +1,19 @@
 Package: nicheCore
 Type: Package
-Title: Core Infrastructure for Niche R Universe
+Title: Core Infrastructure for the Niche R Universe
 Version: 0.1.0
 Authors@R: c(
-    person("Niche", "Contributors", role = c("aut", "cre"),
-           email = "niche@example.com")
+    person(
+        given = "Josh",
+        family = "Gonzales",
+        role = c("aut", "cre"),
+        email = "jgonza10@uoguelph.ca",
+        comment = c(ORCID = "0000-0001-8633-3380")
     )
-Description: Provides core object definitions, validators, and utilities
-    for the niche R universe. Defines niche_spec, niche_recipe, and
-    niche_result objects along with their constructors and validators.
+)
+Description: Provides core object definitions, structural validators, and
+    deterministic utilities for the niche R universe, including the
+    niche_spec, niche_recipe, and niche_result contracts.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
